@@ -39,6 +39,13 @@ class Questions(object):
 
     def get_current_question(self):
         return self.questions[self.status].question
+    
+    def is_first(self):
+        return not(self.status)
+    
+    def check_answer(self, answer):
+        print(answer)
+        return False
 
 
 @bot.message_handler(commands=["start"])
@@ -50,6 +57,8 @@ def start(message):
 def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
+    if not quiz.is_first():
+        quiz.check_answer()
     bot.reply_to(message, quiz.get_current_question())
 
 
