@@ -55,7 +55,7 @@ class Questions(object):
     
     def is_last(self):
         return False
-        
+
     def check_answer(self, answer):
         result = self.questions[self.status].check_answer(answer)
         if result:
@@ -73,7 +73,7 @@ def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
-        quiz.check_answer()
+        quiz.check_answer(message.text)
     bot.reply_to(message, quiz.get_current_question())
 
 
