@@ -5,40 +5,41 @@ from flask_redis import FlaskRedis
 
 import telebot
 
-TOKEN = '915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE'
-QUESTIONS = [
-    {'q': 'q1', 'a': 'a1'}
-    {'q': 'q2', 'a': 'a2'}
-    ]
+TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
+QUESTIONS = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
-app.config.from_object(os.environ.get('GEOQUIZBOT', 'config.DevelopmentConfig'))
+app.config.from_object(os.environ.get("GEOQUIZBOT", "config.DevelopmentConfig"))
 store = FlaskRedis(app)
 
-@bot.message_handler(commands=['start'])
+
+@bot.message_handler(commands=["start"])
 def start(message):
-    bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+    bot.reply_to(message, "Hello, " + message.from_user.first_name)
 
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
+@bot.message_handler(func=lambda message: True, content_types=["text"])
 def echo_message(message):
-    bot.reply_to(message, message.text + '\n' + message.chat.id)
+    bot.reply_to(message, message.text + "\n" + message.chat.id)
 
 
-
-@app.route('/' + TOKEN, methods=['POST'])
+@app.route("/" + TOKEN, methods=["POST"])
 def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    bot.process_new_updates(
+        [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))]
+    )
     return "!", 200
 
-@app.route('/test/<data>')
+
+@app.route("/test/<data>")
 def test(data):
-    store.set('1', data)
-    return store.get('1'), 200
+    store.set("1", data)
+    return store.get("1"), 200
+
 
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://geoquizbot.herokuapp.com/' + TOKEN)
+    bot.set_webhook(url="https://geoquizbot.herokuapp.com/" + TOKEN)
     return "!", 200
