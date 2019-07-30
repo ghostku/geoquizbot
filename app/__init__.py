@@ -24,6 +24,13 @@ class Question(object):
         is_correct = (answer == self.answer)
         print(f'Correct answer: {self.answer} Your answer: {answer} So: {str(is_correct)}')
         return is_correct
+    
+    def check_answer_with_reply(self, answer):
+        is_correct = self.check_answer(answer)
+        if is_correct:
+            return 'Правильно !!!'
+        else:
+            return 'Ответ неверный'
 
 
 class Questions(object):
@@ -56,10 +63,14 @@ class Questions(object):
     def is_last(self):
         return False
 
-    def check_answer(self, answer):
-        result = self.questions[self.status].check_answer(answer)
+    def check_answer(self, answer, reply=false):
+        if reply:
+            result = self.questions[self.status].check_answer_with_reply(answer)
+        else:
+            result = self.questions[self.status].check_answer(answer)
         if result:
             self.status += 1
+            self.save()
         return result
 
 
@@ -73,7 +84,7 @@ def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
-        quiz.check_answer(message.text)
+        quiz.check_answery(message.text, True)
     bot.reply_to(message, quiz.get_current_question())
 
 
