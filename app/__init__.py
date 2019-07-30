@@ -10,9 +10,32 @@ QUESTIONS = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
-app.config.from_object(os.environ.get(
-    "GEOQUIZBOT", "config.DevelopmentConfig"))
-store = FlaskRedis(app)
+app.config.from_object(os.environ.get("GEOQUIZBOT", "config.DevelopmentConfig"))
+storage = FlaskRedis(app)
+
+
+class Question(object):
+    def __init__(self, q, a):
+        self.question = q
+        self.answer = a
+
+
+class Questions(object):
+    def __init__(self, data, id):
+        self.questions = []
+        self.id = id
+        for question in data:
+            self.questions.append(Question(question["q"], question["a"]))
+        self.load_status()
+
+    def load_status(self):
+        self.status = int(storage.get(id))
+
+    def save_status(self):
+        storage.set(id, self.status)
+
+    def get_current_question(self):
+        return self.questions[self.status].question
 
 
 @bot.message_handler(commands=["start"])
@@ -22,7 +45,9 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=["text"])
 def echo_message(message):
-    bot.reply_to(message, message.text + "\n" + str(message.chat.id))
+    # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
+    quiz = Questions(QUESTIONS, message.chat.id)
+    bot.reply_to(message, quiz.get_current_question())
 
 
 @app.route("/" + TOKEN, methods=["POST"])
@@ -35,8 +60,8 @@ def getMessage():
 
 @app.route("/test/<data>")
 def test(data):
-    store.set("1", data)
-    return store.get("1"), 200
+    storage.set("1", data)
+    return storage.get("1"), 200
 
 
 @app.route("/")
