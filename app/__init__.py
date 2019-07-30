@@ -1,13 +1,19 @@
 import os
 
 from flask import Flask, request
+from flask_redis import FlaskRedis
 
 import telebot
 
 TOKEN = '915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE'
+QUESTIONS = [
+    {'q': 'q1', 'a': 'a1'}
+
+    ]
+
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
-
+store = FlaskRedis(app)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -24,6 +30,10 @@ def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
 
+@app.route('/test/<data>')
+def test(data):
+    store.set('1', data)
+    return store.get('1'), 200
 
 @app.route("/")
 def webhook():
