@@ -8,7 +8,7 @@ import telebot
 TOKEN = '915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE'
 QUESTIONS = [
     {'q': 'q1', 'a': 'a1'}
-
+    {'q': 'q2', 'a': 'a2'}
     ]
 
 bot = telebot.TeleBot(TOKEN)
@@ -23,7 +23,8 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def echo_message(message):
-    bot.reply_to(message, message.text)
+    bot.reply_to(message, message.text + '\n' + message.chat.id)
+
 
 
 @app.route('/' + TOKEN, methods=['POST'])
