@@ -29,10 +29,12 @@ class Questions(object):
         self.load_status()
 
     def load_status(self):
-        self.status = int(storage.get(id))
+        print(self.id)
+        print(type(self.id))
+        self.status = int(storage.get(self.id))
 
     def save_status(self):
-        storage.set(id, self.status)
+        storage.set(self.id, self.status)
 
     def get_current_question(self):
         return self.questions[self.status].question
