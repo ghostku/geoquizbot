@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask_redis import FlaskRedis
 
 import telebot
+import pickle
 
 TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
 QUESTIONS = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
@@ -18,24 +19,31 @@ class Question(object):
     def __init__(self, q, a):
         self.question = q
         self.answer = a
+    
+    def check_answer(self, answer):
+        return answer == self.answer
 
 
 class Questions(object):
     def __init__(self, data, id):
-        self.questions = []
-        self.id = id
-        for question in data:
-            self.questions.append(Question(question["q"], question["a"]))
-        self.load_status()
-
-    def load_status(self):
-        try:
-            self.status = int(storage.get(self.id))
-        except TypeError:
+        if not self.load(id):
+            self.questions = []
+            self.id = id
             self.status = 0
+            for question in data:
+                self.questions.append(Question(question["q"], question["a"]))
 
-    def save_status(self):
-        storage.set(self.id, self.status)
+    def load(self, id):
+        try:
+            data = pickle.loads(storage.get(id))
+            self.questions = data.questions
+            self.id = id
+            self.status = data.status
+        except TypeError:
+            return False
+
+    def save(self):
+        storage.set(self.id, pickle.dumps(self))
 
     def get_current_question(self):
         return self.questions[self.status].question
@@ -44,8 +52,10 @@ class Questions(object):
         return not(self.status)
     
     def check_answer(self, answer):
-        print(answer)
-        return False
+        result = self.questions[self.status].check_answer(answer)
+        if result:
+            self.status += 1
+        return result
 
 
 @bot.message_handler(commands=["start"])
