@@ -21,7 +21,9 @@ class Question(object):
         self.answer = a
     
     def check_answer(self, answer):
-        return answer == self.answer
+        is_correct = (answer == self.answer)
+        print(f'Correct answer: {self.answer} Your answer: {answer} So: {}')
+        return is_correct
 
 
 class Questions(object):
