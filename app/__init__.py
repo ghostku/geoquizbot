@@ -84,7 +84,7 @@ def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
-        quiz.check_answery(message.text, True)
+        bot.reply_to(message, quiz.check_answer(message.text, True))
     bot.reply_to(message, quiz.get_current_question())
 
 
