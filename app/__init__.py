@@ -6,7 +6,7 @@ import telebot
 
 TOKEN = '915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE'
 bot = telebot.TeleBot(TOKEN)
-server = Flask(__name__)
+app = Flask(__name__)
 
 
 @bot.message_handler(commands=['start'])
