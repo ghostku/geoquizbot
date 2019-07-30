@@ -29,9 +29,10 @@ class Questions(object):
         self.load_status()
 
     def load_status(self):
-        print(self.id)
-        print(type(self.id))
-        self.status = int(storage.get(self.id))
+        try:
+            self.status = int(storage.get(self.id))
+        except TypeError:
+            self.status = 0
 
     def save_status(self):
         storage.set(self.id, self.status)
