@@ -13,6 +13,7 @@ QUESTIONS = [
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
+app.config.from_object(os.environ.get('GEOQUIZBOT', 'config.DevelopmentConfig'))
 store = FlaskRedis(app)
 
 @bot.message_handler(commands=['start'])
