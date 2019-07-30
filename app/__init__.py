@@ -10,7 +10,8 @@ QUESTIONS = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
-app.config.from_object(os.environ.get("GEOQUIZBOT", "config.DevelopmentConfig"))
+app.config.from_object(os.environ.get(
+    "GEOQUIZBOT", "config.DevelopmentConfig"))
 store = FlaskRedis(app)
 
 
@@ -21,7 +22,7 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=["text"])
 def echo_message(message):
-    bot.reply_to(message, message.text + "\n" + message.chat.id)
+    bot.reply_to(message, message.text + "\n" + str(message.chat.id))
 
 
 @app.route("/" + TOKEN, methods=["POST"])
