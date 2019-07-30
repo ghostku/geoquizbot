@@ -22,7 +22,7 @@ class Question(object):
     
     def check_answer(self, answer):
         is_correct = (answer == self.answer)
-        print(f'Correct answer: {self.answer} Your answer: {answer} So: {}')
+        print(f'Correct answer: {self.answer} Your answer: {answer} So: {str(is_correct)}')
         return is_correct
 
 
