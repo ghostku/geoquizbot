@@ -7,7 +7,7 @@ import telebot
 import pickle
 
 TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
-QUESTIONS = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
+QUESTIONS = [{"q": "Первый вопрос он простой Ответ: _ВАУ_", "a": "ВАУ"}, {"q": "q2", "a": "a2"}]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
@@ -63,7 +63,7 @@ class Questions(object):
     def is_last(self):
         return False
 
-    def check_answer(self, answer, reply=false):
+    def check_answer(self, answer, reply=False):
         if reply:
             result = self.questions[self.status].check_answer_with_reply(answer)
         else:
