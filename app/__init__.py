@@ -56,6 +56,7 @@ class GeoQuestion(Question):
 class Questions(object):
     def __init__(self, data, id):
         if not self.load(id):
+            print('New load')
             self.questions = []
             self.id = id
             self.status = 0
