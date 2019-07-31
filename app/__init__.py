@@ -8,8 +8,8 @@ import pickle
 
 TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
 QUESTIONS = [
-    {"q": "Первый вопрос он простой Ответ: _ВАУ_", "a": "ВАУ"},
-    {"q": "q2", "a": "a2"},
+    {"q": "Первый вопрос он простой Ответ: _ВАУ_", "a": "ВАУ", "type": "text"},
+    {"q": "q2", "a": "a2", "img": "1.jpg", "type": "geo"},
 ]
 
 bot = telebot.TeleBot(TOKEN)
@@ -32,9 +32,19 @@ class Question(object):
             "status": is_correct,
             "message": "Правильно !!!" if is_correct else "Ответ неверный",
         }
-    
+
     def ask_question(self, chat_id):
         bot.send_message(chat_id, self.question)
+
+
+class GeoQuestion(Question):
+    def __init__(self, q, a, img):
+        self.question = q
+        self.answer = a
+        self.image = img
+
+    def ask_question(self, chat_id):
+        bot.send_message(chat_id, self.question + '\n' + self.image)
 
 
 class Questions(object):
@@ -44,7 +54,12 @@ class Questions(object):
             self.id = id
             self.status = 0
             for question in data:
-                self.questions.append(Question(question["q"], question["a"]))
+                if question["type"] == "text":
+                    self.questions.append(Question(question["q"], question["a"]))
+                elif question["type"] == "geo":
+                    self.questions.append(
+                        GeoQuestion(question["q"], question["a"], question["img"])
+                    )
 
     def load(self, id):
         try:
@@ -71,7 +86,7 @@ class Questions(object):
 
     def check_answer(self, answer):
         result = self.questions[self.status].check_answer(answer)
-        if result['status']:
+        if result["status"]:
             self.status += 1
             self.save()
         return result
@@ -93,7 +108,7 @@ def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
-        bot.reply_to(message, quiz.check_answer(message.text)['message'])
+        bot.reply_to(message, quiz.check_answer(message.text)["message"])
     # bot.reply_to(message, quiz.get_current_question())
     quiz.ask_current_question(message.chat.id)
 

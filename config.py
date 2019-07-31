@@ -14,6 +14,7 @@ class Config(object):
 
     basedir = os.path.abspath(os.path.dirname(__file__))
     dbdir = os.path.join(basedir, 'data/db')
+    IMG_DIR = os.path.join(basedir, 'data/imgs')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(dbdir, 'gbot.db')
     SQLALCHEMY_MIGRATE_REPO = os.path.join(dbdir, 'db_repository')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
