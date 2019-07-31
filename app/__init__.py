@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask_redis import FlaskRedis
 
 import telebot
+from telebot.apihelper import ApiException, types
 import pickle
 
 TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
@@ -49,14 +50,18 @@ class GeoQuestion(Question):
             chat_id,
             self.question + "\n" + os.path.join(app.config["IMG_DIR"], self.image),
         )
-        photo = open(os.path.join(app.config["IMG_DIR"], self.image), 'rb')
-        bot.send_photo(chat_id, photo, caption='Где это было снято?')
+        photo = open(os.path.join(app.config["IMG_DIR"], self.image), "rb")
+        keyboard = types.ReplyKeyboardMarkup()
+        keyboard.add(types.KeyboardButton(text="Я на месте", request_location=True))
+        bot.send_photo(
+            chat_id, photo, caption="Найдите место сьемки", reply_markup=keyboard
+        )
 
 
 class Questions(object):
     def __init__(self, data, id):
         if not self.load(id):
-            print('New load')
+            print("New load")
             self.questions = []
             self.id = id
             self.status = 0
@@ -92,7 +97,7 @@ class Questions(object):
         return False
 
     def check_answer(self, answer):
-        print(f'Current status is: {self.status}')
+        print(f"Current status is: {self.status}")
         result = self.questions[self.status].check_answer(answer)
         if result["status"]:
             self.status += 1
