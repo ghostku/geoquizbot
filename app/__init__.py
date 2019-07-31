@@ -67,7 +67,7 @@ class Questions(object):
 
     def check_answer(self, answer):
         result = self.questions[self.status].check_answer(answer)
-        if result.status:
+        if result['status']:
             self.status += 1
             self.save()
         return result
