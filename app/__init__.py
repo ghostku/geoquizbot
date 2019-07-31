@@ -32,6 +32,9 @@ class Question(object):
             "status": is_correct,
             "message": "Правильно !!!" if is_correct else "Ответ неверный",
         }
+    
+    def ask_question(self, chat_id):
+        bot.send_message(chat_id, self.question)
 
 
 class Questions(object):
@@ -55,9 +58,10 @@ class Questions(object):
     def save(self):
         storage.set(self.id, pickle.dumps(self))
 
-    def get_current_question(self):
-        print(self.status)
-        return self.questions[self.status].question
+    def ask_current_question(self, chat_id):
+        # print(self.status)
+        self.questions[self.status].ask_question(chat_id)
+        # return self.questions[self.status].question
 
     def is_first(self):
         return not (self.status)
@@ -90,7 +94,8 @@ def echo_message(message):
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
         bot.reply_to(message, quiz.check_answer(message.text)['message'])
-    bot.reply_to(message, quiz.get_current_question())
+    # bot.reply_to(message, quiz.get_current_question())
+    quiz.ask_current_question(message.chat.id)
 
 
 @app.route("/" + TOKEN, methods=["POST"])
