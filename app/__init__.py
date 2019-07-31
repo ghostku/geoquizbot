@@ -91,6 +91,7 @@ class Questions(object):
         return False
 
     def check_answer(self, answer):
+        print(f'Current status is: {self.status}')
         result = self.questions[self.status].check_answer(answer)
         if result["status"]:
             self.status += 1
