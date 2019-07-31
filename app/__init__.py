@@ -44,7 +44,13 @@ class GeoQuestion(Question):
         self.image = img
 
     def ask_question(self, chat_id):
-        bot.send_message(chat_id, self.question + '\n' + self.image)
+        bot.send_message(chat_id, self.question + "\n" + self.image)
+        bot.send_message(
+            chat_id,
+            self.question + "\n" + os.path.join(app.config["IMG_DIR"], self.image),
+        )
+        photo = open(os.path.join(app.config["IMG_DIR"], self.image), 'rb')
+        bot.send_photo(chat_id, photo)
 
 
 class Questions(object):
