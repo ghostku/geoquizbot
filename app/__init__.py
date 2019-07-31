@@ -7,7 +7,10 @@ import telebot
 import pickle
 
 TOKEN = "915055480:AAF8d8fTTeD6QaPUs3aVOTcsUtxbTVYwTYE"
-QUESTIONS = [{"q": "Первый вопрос он простой Ответ: _ВАУ_", "a": "ВАУ"}, {"q": "q2", "a": "a2"}]
+QUESTIONS = [
+    {"q": "Первый вопрос он простой Ответ: _ВАУ_", "a": "ВАУ"},
+    {"q": "q2", "a": "a2"},
+]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
@@ -19,18 +22,16 @@ class Question(object):
     def __init__(self, q, a):
         self.question = q
         self.answer = a
-    
+
     def check_answer(self, answer):
-        is_correct = (answer == self.answer)
-        print(f'Correct answer: {self.answer} Your answer: {answer} So: {str(is_correct)}')
-        return is_correct
-    
-    def check_answer_with_reply(self, answer):
-        is_correct = self.check_answer(answer)
-        if is_correct:
-            return 'Правильно !!!'
-        else:
-            return 'Ответ неверный'
+        is_correct = answer == self.answer
+        print(
+            f"Correct answer: {self.answer} Your answer: {answer} So: {str(is_correct)}"
+        )
+        return {
+            "status": is_correct,
+            "message": "Правильно !!!" if is_correct else "Ответ неверный",
+        }
 
 
 class Questions(object):
@@ -57,19 +58,16 @@ class Questions(object):
     def get_current_question(self):
         print(self.status)
         return self.questions[self.status].question
-    
+
     def is_first(self):
-        return not(self.status)
-    
+        return not (self.status)
+
     def is_last(self):
         return False
 
-    def check_answer(self, answer, reply=False):
-        if reply:
-            result = self.questions[self.status].check_answer_with_reply(answer)
-        else:
-            result = self.questions[self.status].check_answer(answer)
-        if result:
+    def check_answer(self, answer):
+        result = self.questions[self.status].check_answer(answer)
+        if result.status:
             self.status += 1
             self.save()
         return result
@@ -91,7 +89,7 @@ def echo_message(message):
     # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
-        bot.reply_to(message, quiz.check_answer(message.text, True))
+        bot.reply_to(message, quiz.check_answer(message.text)['message'])
     bot.reply_to(message, quiz.get_current_question())
 
 
