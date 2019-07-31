@@ -101,6 +101,7 @@ class ProductionConfig(Config):
     GSRY_URL = 'https://script.google.com/macros/s/AKfycbz7RrFDk63hZWsazCRGlRnUoOwl06kt1MNIg_W47oobJ3-d5n6-/exec'
     # REDIS_URL = 'redis://redis_db:6379/0'
     REDIS_URL = os.environ.get("REDIS_URL")
+    WEB_HOOK_URL = "https://geoquizbot.herokuapp.com/"
 
 
 class DevelopmentConfig(Config):
@@ -116,3 +117,4 @@ class DevelopmentConfig(Config):
     TELEBOT_WEBHOOK_SSL_PRIV = './dev/gbot_dev_pkey.pem'  # Путь к приватному ключу
     GSRY_URL = 'https://script.google.com/macros/s/AKfycbxXEw8wForVFGM8dMdZrwI_Lfmk4s76mYAaeh2dpIvz7PL8faD8/exec'
     REDIS_URL = 'redis://127.0.0.1:6379/0'
+    WEB_HOOK_URL = 'https://9c6da52e.ngrok.io/'
