@@ -50,7 +50,7 @@ class GeoQuestion(Question):
             self.question + "\n" + os.path.join(app.config["IMG_DIR"], self.image),
         )
         photo = open(os.path.join(app.config["IMG_DIR"], self.image), 'rb')
-        bot.send_photo(chat_id, photo)
+        bot.send_photo(chat_id, photo, caption='Где это было снято?')
 
 
 class Questions(object):
@@ -113,11 +113,9 @@ def reset(message):
 
 @bot.message_handler(func=lambda message: True, content_types=["text"])
 def echo_message(message):
-    # bot.reply_to(message, message.text + "\n" + str(message.chat.id))
     quiz = Questions(QUESTIONS, message.chat.id)
     if not quiz.is_last():
         bot.reply_to(message, quiz.check_answer(message.text)["message"])
-    # bot.reply_to(message, quiz.get_current_question())
     quiz.ask_current_question(message.chat.id)
 
 
