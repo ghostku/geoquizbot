@@ -1,0 +1,24 @@
+repos:
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.6
+-   repo: https://github.com/doublify/pre-commit-isort
+    sha: master
+    hooks:
+      - id: isort
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.2.3
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+   # -   id: check-docstring-first
+    -   id: flake8
+# -   repo: local
+#     hooks:
+#       - id: pylint
+#         name: pylint
+#         entry: python -m pylint.__main__
+#         language: system
+#         types: [python]

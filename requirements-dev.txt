@@ -4,5 +4,9 @@ pyTelegramBotAPI
 flask_redis
 haversine
 pillow
-# prod
-gunicorn
+# dev
+pre-commit
+flake8
+flake8-docstrings
+black
+

@@ -86,6 +86,7 @@ class Config(object):
     }
     RECORD_STATUSES = ['Work', 'Done', 'Fail', 'Wait', 'Call']
     LAST_SET_HOOK_TRY = ''
+    DEFAULT_QUIZ = os.path.join(basedir, 'data/quiz.json')
 
 
 class ProductionConfig(Config):
