@@ -5,7 +5,7 @@ from flask_redis import FlaskRedis
 from datetime import datetime
 import json
 import telebot
-from telebot.apihelper import ApiException, types
+from telebot.apihelper import types
 from haversine import haversine, Unit
 import pickle
 
@@ -13,7 +13,7 @@ from .exif import ImageMetaData
 
 ADMIN_CHAT_ID = 227756922
 TOKEN = "752824460:AAGLdNRpc89MntcHA-jHc9qnnidXK7RHaJE"
-# QUESTIONS = 
+# QUESTIONS =
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 app.config.from_object(os.environ.get("GEOQUIZBOT", "config.DevelopmentConfig"))
@@ -124,26 +124,23 @@ class Questions(object):
 
     def load_from_file(self, filename: str):
         """Load object from JSON file
-        
+
         Arguments:
             filename {str} -- File name with path
         """
-    
-        data = json.load(open(filename, 'r', encoding='utf-8'))
+
+        data = json.load(open(filename, "r", encoding="utf-8"))
         self.greeting_message = data.get("greeting message", "Hi")
         self.farevell_message = data.get("farevell message", "Bye")
         for question in data["questions"]:
-                if question["type"] == "text":
-                    self.questions.append(
-                        Question(
-                            question["q"],
-                            question["a"],
-                            helps=question.get("helps", []),
-                        )
+            if question["type"] == "text":
+                self.questions.append(
+                    Question(
+                        question["q"], question["a"], helps=question.get("helps", [])
                     )
-                elif question["type"] == "geo":
-                    self.questions.append(GeoQuestion(question["img"]))
-            
+                )
+            elif question["type"] == "geo":
+                self.questions.append(GeoQuestion(question["img"]))
 
     def load(self, id):
         try:
@@ -239,7 +236,7 @@ def start(message):
     storage.set("users", pickle.dumps(users_list))
 
     storage.delete(message.chat.id)
-    quiz = Questions(message.chat.id, app.config['DEFAULT_QUIZ'])
+    quiz = Questions(message.chat.id, app.config["DEFAULT_QUIZ"])
     quiz.start(message.chat.id)
 
 
@@ -251,7 +248,7 @@ def reset(message):
 
 @bot.message_handler(commands=["reask"])
 def reask(message):
-    quiz = Questions(QUESTIONS, message.chat.id)
+    quiz = Questions(message.chat.id, app.config["DEFAULT_QUIZ"])
     quiz.ask_current_question(message.chat.id)
 
 
@@ -268,11 +265,11 @@ def echo_message(message):
             return
         elif message.text.startswith("skip"):
             game_id = message.text.split()[-1]
-            quiz = Questions(QUESTIONS, game_id)
+            quiz = Questions(game_id, app.config["DEFAULT_QUIZ"])
             quiz.force_next_answer()
             return
 
-    quiz = Questions(QUESTIONS, message.chat.id)
+    quiz = Questions(message.chat.id, app.config["DEFAULT_QUIZ"])
 
     if quiz.is_in_process():
         if quiz.check_answer(message):

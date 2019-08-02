@@ -1,12 +1,12 @@
 from PIL import Image
-from PIL.ExifTags import TAGS, GPSTAGS
+from PIL.ExifTags import GPSTAGS, TAGS
 
 
 class ImageMetaData(object):
     """
-    Extract the exif data from any image. Data includes GPS coordinates, 
+    Extract the exif data from any image. Data includes GPS coordinates,
     Focal Length, Manufacture, and more.
-    """ # noqa
+    """  # noqa
 
     exif_data = None
     image = None
@@ -18,9 +18,9 @@ class ImageMetaData(object):
 
     def get_exif_data(self):
         """
-        Returns a dictionary from the exif data of an 
+        Returns a dictionary from the exif data of an
         PIL Image item. Also converts the GPS Tags
-        """ # noqa
+        """  # noqa
         exif_data = {}
         info = self.image._getexif()
         if info:
@@ -45,9 +45,9 @@ class ImageMetaData(object):
 
     def convert_to_degress(self, value):
         """
-        Helper function to convert the GPS coordinates 
+        Helper function to convert the GPS coordinates
         stored in the EXIF to degress in float format
-        """ # noqa
+        """  # noqa
         d0 = value[0][0]
         d1 = value[0][1]
         d = float(d0) / float(d1)
@@ -64,9 +64,9 @@ class ImageMetaData(object):
 
     def get_lat_lng(self):
         """
-        Returns the latitude and longitude, if available, 
+        Returns the latitude and longitude, if available,
         from the provided exif_data (obtained through get_exif_data above)
-        """ # noqa
+        """  # noqa
         lat = None
         lng = None
         exif_data = self.get_exif_data()
