@@ -65,6 +65,7 @@ class Config(object):
         "root": {"level": "WARNING", "handlers": ["stderr"]},
     }
     DEFAULT_QUIZ = os.path.join(basedir, "data/quiz.json")
+    DISTANSE_ERROR = 10
 
 
 class ProductionConfig(Config):
@@ -81,9 +82,12 @@ class ProductionConfig(Config):
     # REDIS_URL = 'redis://redis_db:6379/0'
     REDIS_URL = os.environ.get("REDIS_URL")
     WEB_HOOK_URL = "https://geoquizbot.herokuapp.com/"
+    TELEGRAM_BOT_TOKEN = "752824460:AAGLdNRpc89MntcHA-jHc9qnnidXK7RHaJE"
+    ADMIN_CHAT_ID = 227756922
 
 
 class DevelopmentConfig(Config):
+
     DEVELOPMENT = True
     SELF_SIGNED_SSL = True
     LOG = Config.LOGGING
@@ -97,3 +101,5 @@ class DevelopmentConfig(Config):
     GSRY_URL = "https://script.google.com/macros/s/AKfycbxXEw8wForVFGM8dMdZrwI_Lfmk4s76mYAaeh2dpIvz7PL8faD8/exec"
     REDIS_URL = "redis://127.0.0.1:6379/0"
     WEB_HOOK_URL = "https://9c6da52e.ngrok.io/"
+    TELEGRAM_BOT_TOKEN = "752824460:AAGLdNRpc89MntcHA-jHc9qnnidXK7RHaJE"
+    ADMIN_CHAT_ID = 227756922

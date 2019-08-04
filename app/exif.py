@@ -1,12 +1,16 @@
+# pylint: disable=bad-continuation, protected-access, no-self-use
+
+"""Библиотека для извлечения Geo-данных из EXIF
+"""
 from PIL import Image
 from PIL.ExifTags import GPSTAGS, TAGS
 
 
-class ImageMetaData(object):
+class ImageMetaData:
     """
     Extract the exif data from any image. Data includes GPS coordinates,
     Focal Length, Manufacture, and more.
-    """  # noqa
+    """
 
     exif_data = None
     image = None
@@ -20,7 +24,7 @@ class ImageMetaData(object):
         """
         Returns a dictionary from the exif data of an
         PIL Image item. Also converts the GPS Tags
-        """  # noqa
+        """
         exif_data = {}
         info = self.image._getexif()
         if info:
@@ -28,9 +32,9 @@ class ImageMetaData(object):
                 decoded = TAGS.get(tag, tag)
                 if decoded == "GPSInfo":
                     gps_data = {}
-                    for t in value:
-                        sub_decoded = GPSTAGS.get(t, t)
-                        gps_data[sub_decoded] = value[t]
+                    for item in value:
+                        sub_decoded = GPSTAGS.get(item, item)
+                        gps_data[sub_decoded] = value[item]
 
                     exif_data[decoded] = gps_data
                 else:
@@ -38,29 +42,24 @@ class ImageMetaData(object):
         self.exif_data = exif_data
         return exif_data
 
-    def get_if_exist(self, data, key):
-        if key in data:
-            return data[key]
-        return None
-
     def convert_to_degress(self, value):
         """
         Helper function to convert the GPS coordinates
         stored in the EXIF to degress in float format
         """  # noqa
-        d0 = value[0][0]
-        d1 = value[0][1]
-        d = float(d0) / float(d1)
+        deg0 = value[0][0]
+        deg1 = value[0][1]
+        deg = float(deg0) / float(deg1)
 
-        m0 = value[1][0]
-        m1 = value[1][1]
-        m = float(m0) / float(m1)
+        min0 = value[1][0]
+        min1 = value[1][1]
+        minute = float(min0) / float(min1)
 
-        s0 = value[2][0]
-        s1 = value[2][1]
-        s = float(s0) / float(s1)
+        sec0 = value[2][0]
+        sec1 = value[2][1]
+        sec = float(sec0) / float(sec1)
 
-        return d + (m / 60.0) + (s / 3600.0)
+        return deg + (minute / 60.0) + (sec / 3600.0)
 
     def get_lat_lng(self):
         """
@@ -73,10 +72,10 @@ class ImageMetaData(object):
         # print(exif_data)
         if "GPSInfo" in exif_data:
             gps_info = exif_data["GPSInfo"]
-            gps_latitude = self.get_if_exist(gps_info, "GPSLatitude")
-            gps_latitude_ref = self.get_if_exist(gps_info, "GPSLatitudeRef")
-            gps_longitude = self.get_if_exist(gps_info, "GPSLongitude")
-            gps_longitude_ref = self.get_if_exist(gps_info, "GPSLongitudeRef")
+            gps_latitude = gps_info.get("GPSLatitude", None)
+            gps_latitude_ref = gps_info.get("GPSLatitudeRef", None)
+            gps_longitude = gps_info.get("GPSLongitude", None)
+            gps_longitude_ref = gps_info.get("GPSLongitudeRef", None)
             if (
                 gps_latitude
                 and gps_latitude_ref
