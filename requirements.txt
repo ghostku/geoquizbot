@@ -1,8 +1,0 @@
-# main
-flask
-pyTelegramBotAPI
-flask_redis
-haversine
-pillow
-# prod
-gunicorn
