@@ -4,3 +4,4 @@
 dev/*
 data/*
 .vscode/*
+*.code-workspace

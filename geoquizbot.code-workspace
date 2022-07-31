@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "C:\\Users\\ghost\\Envs\\geoquizbot\\Lib\\site-packages\\telebot"
 		}
 	]
 }
