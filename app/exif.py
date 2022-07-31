@@ -1,29 +1,30 @@
 # pylint: disable=bad-continuation, protected-access, no-self-use
 
-"""Библиотека для извлечения Geo-данных из EXIF
-"""
+"""Библиотека для извлечения Geo-данных из EXIF."""
 from PIL import Image
 from PIL.ExifTags import GPSTAGS, TAGS
 
 
 class ImageMetaData:
     """
-    Extract the exif data from any image. Data includes GPS coordinates,
-    Focal Length, Manufacture, and more.
+    Extract the exif data from any image.
+
+    Data includes GPS coordinates, Focal Length, Manufacture, and more.
     """
 
     exif_data = None
     image = None
 
-    def __init__(self, img_path):
+    def __init__(self, img_path: str) -> None:
         self.image = Image.open(img_path)
         self.get_exif_data()
         super(ImageMetaData, self).__init__()
 
-    def get_exif_data(self):
+    def get_exif_data(self) -> dict:
         """
-        Returns a dictionary from the exif data of an
-        PIL Image item. Also converts the GPS Tags
+        Return a dictionary from the exif data of an PIL Image item.
+
+        Also converts the GPS Tags
         """
         exif_data = {}
         info = self.image._getexif()
@@ -42,46 +43,36 @@ class ImageMetaData:
         self.exif_data = exif_data
         return exif_data
 
-    def convert_to_degress(self, value):
-        """
-        Helper function to convert the GPS coordinates
-        stored in the EXIF to degress in float format
-        """  # noqa
-        deg0 = value[0][0]
-        deg1 = value[0][1]
-        deg = float(deg0) / float(deg1)
+    def convert_to_degress(self, value: tuple) -> float:
+        """Convert the GPS coordinates stored in the EXIF to degress in float format."""
 
-        min0 = value[1][0]
-        min1 = value[1][1]
-        minute = float(min0) / float(min1)
+        def convert_part(value: tuple) -> float:
+            if isinstance(value, tuple):
+                result = float(value[0]) / float(value[1])
+            else:
+                return float(value)
+            return result
 
-        sec0 = value[2][0]
-        sec1 = value[2][1]
-        sec = float(sec0) / float(sec1)
-
+        deg = convert_part(value[0])
+        minute = convert_part(value[1])
+        sec = convert_part(value[2])
         return deg + (minute / 60.0) + (sec / 3600.0)
 
-    def get_lat_lng(self):
+    def get_lat_lng(self) -> tuple:
+        """Return the latitude and longitude.
+
+        If available, from the provided exif_data (obtained through get_exif_data above)
         """
-        Returns the latitude and longitude, if available,
-        from the provided exif_data (obtained through get_exif_data above)
-        """  # noqa
         lat = None
         lng = None
         exif_data = self.get_exif_data()
-        # print(exif_data)
         if "GPSInfo" in exif_data:
             gps_info = exif_data["GPSInfo"]
             gps_latitude = gps_info.get("GPSLatitude", None)
             gps_latitude_ref = gps_info.get("GPSLatitudeRef", None)
             gps_longitude = gps_info.get("GPSLongitude", None)
             gps_longitude_ref = gps_info.get("GPSLongitudeRef", None)
-            if (
-                gps_latitude
-                and gps_latitude_ref
-                and gps_longitude
-                and gps_longitude_ref
-            ):
+            if all([gps_latitude, gps_latitude_ref, gps_longitude, gps_longitude_ref]):
                 lat = self.convert_to_degress(gps_latitude)
                 if gps_latitude_ref != "N":
                     lat = 0 - lat
